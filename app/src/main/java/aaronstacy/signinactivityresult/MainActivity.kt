@@ -31,6 +31,7 @@ class MainActivity : AppCompatActivity() {
     super.onStart()
     if (calledSignIn) return
     calledSignIn = true
+    Log.d("BLERG", "calling signOut + startActivityForResult")
     googleSignInClient.signOut()
         .continueWith {
           Log.d("BLERG", "Signed out: " + it.result)
@@ -52,8 +53,12 @@ class MainActivity : AppCompatActivity() {
             if (!it.isSuccessful) {
               val e = it.exception
               if (e is ApiException)
-                if (e.statusCode == GoogleSignInStatusCodes.SIGN_IN_CURRENTLY_IN_PROGRESS)
+                if (e.statusCode == GoogleSignInStatusCodes.SIGN_IN_CURRENTLY_IN_PROGRESS) {
                   Log.e("BLERG", "SIGN_IN_CURRENTLY_IN_PROGRESS")
+                  googleSignInClient.silentSignIn().continueWith {
+                    Log.d("BLERG", "after failed sign in attempt: " + it.result)
+                  }
+                }
             }
             it
           }
