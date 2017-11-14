@@ -50,7 +50,9 @@ class MainActivity : AppCompatActivity() {
     if (requestCode == SIGN_IN_CODE) {
       GoogleSignIn.getSignedInAccountFromIntent(data)
           .continueWith {
-            if (!it.isSuccessful) {
+            if (it.isSuccessful) {
+              Log.d("BLERG", "Got sign in account!" + it.result)
+            } else {
               val e = it.exception
               if (e is ApiException)
                 if (e.statusCode == GoogleSignInStatusCodes.SIGN_IN_CURRENTLY_IN_PROGRESS) {
